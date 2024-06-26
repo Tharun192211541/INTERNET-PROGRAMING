@@ -1,0 +1,23 @@
+<p>Welcome to the Currency Converter Help page! Here you will find information on how to use our currency converter and answers to common questions.</p>
+
+<h2>How to Use the Currency Converter</h2>
+<ol>
+    <li><strong>Select the Currency:</strong> Choose the currency you want to convert from the dropdown menu labeled "From".</li>
+    <li><strong>Enter the Amount:</strong> Input the amount of money you wish to convert in the "Amount" field.</li>
+    <li><strong>Select the Target Currency:</strong> Choose the currency you want to convert to from the dropdown menu labeled "To".</li>
+    <li><strong>Click Convert:</strong> Press the "Convert" button to see the converted amount.</li>
+</ol>
+
+<h2>Frequently Asked Questions (FAQs)</h2>
+<h3>What is a currency converter?</h3>
+<p>A currency converter is a tool that allows you to convert one currency into another using the current exchange rates.</p>
+
+<h3>How accurate are the exchange rates?</h3>
+<p>We strive to provide the most accurate and up-to-date exchange rates by using data from reliable financial sources. However, exchange rates may fluctuate and may not be the same as the rates offered by financial institutions at the exact moment of conversion.</p>
+
+<h3>Is there a fee for using the currency converter?</h3>
+<p>No, our currency converter is free to use. However, please note that financial institutions may charge fees or offer different exchange rates when you perform actual transactions.</p>
+
+<h3>Can I use the currency converter for any currency?</h3>
+<p>Our currency converter supports a wide range of global currencies. If you cannot find a specific currency, please contact our support team for assistance.</p>
+
