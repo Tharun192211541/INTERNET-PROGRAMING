@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Currency Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+        }
+        .container {
+            background: white;
+            margin-top: 2rem;
+            margin-left: 40%;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .conversion-box {
+            display: inline-block;
+            text-align: left;
+        }
+        input, select, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result, #exchangeRate {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Currency Converter</h1>
+    </header>
+    <div id="navigation">
+        <a id="homeBtn" href="INTERNET-PROGRAMING-PROJECT.html" class="link">Home</a>
+        <a href="#" class="link" onclick="loadDoc()">About Us</a>
+        <a href="#" class="link" onclick="l()">Help</a>
+        <a href="#" class="link" onclick="load()">Contact Us</a>
+    </div>
+    <div class="container">
+        <h2>Currency Converter</h2>
+        <div class="conversion-box">
+            <input type="number" id="amount" placeholder="Enter amount">
+            <select id="fromCurrency">
+                <!-- Populated dynamically using JavaScript -->
+            </select>
+            <select id="toCurrency">
+                <!-- Populated dynamically using JavaScript -->
+            </select>
+            <button onclick="convertCurrency()">Convert</button>
+            <div id="result"></div>
+            <div id="exchangeRate"></div>
+            <div class="error" id="error"></div>
+        </div>
+    </div>
+    <div id="homeContent">
+        <!-- Content loaded by JavaScript will appear here -->
+    </div>
+
+    <script>
+        const countryList = {
+            AED: "United Arab Emirates Dirham", AFN: "Afghan Afghani", XCD: "East Caribbean Dollar", ALL: "Albanian Lek", AMD: "Armenian Dram", ANG: "Netherlands Antillean Guilder", AOA: "Angolan Kwanza", AQD: "Antarctican Dollar", ARS: "Argentine Peso", AUD: "Australian Dollar",
+            AZN: "Azerbaijani Manat", BAM: "Bosnia and Herzegovina Convertible Mark", BBD: "Barbadian Dollar", BDT: "Bangladeshi Taka", XOF: "West African CFA Franc", BGN: "Bulgarian Lev", BHD: "Bahraini Dinar", BIF: "Burundian Franc", BMD: "Bermudian Dollar", BND: "Brunei Dollar",
+            BOB: "Bolivian Boliviano", BRL: "Brazilian Real", BSD: "Bahamian Dollar", NOK: "Norwegian Krone", BWP: "Botswana Pula", BYR: "Belarusian Ruble", BZD: "Belize Dollar", CAD: "Canadian Dollar", CDF: "Congolese Franc", XAF: "Central African CFA Franc", CHF: "Swiss Franc",
+            CLP: "Chilean Peso", CNY: "Chinese Yuan Renminbi", COP: "Colombian Peso", CRC: "Costa Rican Colon", CUP: "Cuban Peso", CVE: "Cape Verdean Escudo", CYP: "Cypriot Pound", CZK: "Czech Koruna", DJF: "Djiboutian Franc", DKK: "Danish Krone", DOP: "Dominican Peso",
+            DZD: "Algerian Dinar", ECS: "Ecuadorian Sucre", EEK: "Estonian Kroon", EGP: "Egyptian Pound", ETB: "Ethiopian Birr", EUR: "Euro", FJD: "Fijian Dollar", FKP: "Falkland Islands Pound", GBP: "British Pound Sterling", GEL: "Georgian Lari", GGP: "Guernsey Pound",
+            GHS: "Ghanaian Cedi", GIP: "Gibraltar Pound", GMD: "Gambian Dalasi", GNF: "Guinean Franc", GTQ: "Guatemalan Quetzal", GYD: "Guyanaese Dollar", HKD: "Hong Kong Dollar", HNL: "Honduran Lempira", HRK: "Croatian Kuna", HTG: "Haitian Gourde", HUF: "Hungarian Forint",
+            IDR: "Indonesian Rupiah", ILS: "Israeli New Sheqel", INR: "Indian Rupee", IQD: "Iraqi Dinar", IRR: "Iranian Rial", ISK: "Icelandic Krona", JMD: "Jamaican Dollar", JOD: "Jordanian Dinar", JPY: "Japanese Yen", KES: "Kenyan Shilling", KGS: "Kyrgyzstani Som",
+            KHR: "Cambodian Riel", KMF: "Comorian Franc", KPW: "North Korean Won", KRW: "South Korean Won", KWD: "Kuwaiti Dinar", KYD: "Cayman Islands Dollar", KZT: "Kazakhstani Tenge", LAK: "Laotian Kip", LBP: "Lebanese Pound", LKR: "Sri Lankan Rupee", LRD: "Liberian Dollar",
+            LSL: "Lesotho Loti", LTL: "Lithuanian Litas", LVL: "Latvian Lats", LYD: "Libyan Dinar", MAD: "Moroccan Dirham", MDL: "Moldovan Leu", MGA: "Malagasy Ariary", MKD: "Macedonian Denar", MMK: "Myanma Kyat", MNT: "Mongolian Tugrik", MOP: "Macanese Pataca",
+            MRO: "Mauritanian Ouguiya", MTL: "Maltese Lira", MUR: "Mauritian Rupee", MVR: "Maldivian Rufiyaa", MWK: "Malawian Kwacha", MXN: "Mexican Peso", MYR: "Malaysian Ringgit", MZN: "Mozambican Metical", NAD: "Namibian Dollar", XPF: "CFP Franc", NGN: "Nigerian Naira",
+            NIO: "Nicaraguan Cordoba", NPR: "Nepalese Rupee", NZD: "New Zealand Dollar", OMR: "Omani Rial", PAB: "Panamanian Balboa", PEN: "Peruvian Nuevo Sol", PGK: "Papua New Guinean Kina", PHP: "Philippine Peso", PKR: "Pakistani Rupee", PLN: "Polish Zloty",
+            PYG: "Paraguayan Guarani", QAR: "Qatari Rial", RON: "Romanian Leu", RSD: "Serbian Dinar", RUB: "Russian Ruble", RWF: "Rwandan Franc", SAR: "Saudi Riyal", SBD: "Solomon Islands Dollar", SCR: "Seychellois Rupee", SDG: "Sudanese Pound", SEK: "Swedish Krona",
+            SGD: "Singapore Dollar", SKK: "Slovak Koruna", SLL: "Sierra Leonean Leone", SOS: "Somali Shilling", SRD: "Surinamese Dollar", STD: "Sao Tome and Principe Dobra", SVC: "Salvadoran Colon", SYP: "Syrian Pound", SZL: "Swazi Lilangeni", THB: "Thai Baht",
+            TJS: "Tajikistani Somoni", TMT: "Turkmenistani Manat", TND: "Tunisian Dinar", TOP: "Tongan Pa'anga", TRY: "Turkish Lira", TTD: "Trinidad and Tobago Dollar", TWD: "New Taiwan Dollar", TZS: "Tanzanian Shilling", UAH: "Ukrainian Hryvnia", UGX: "Ugandan Shilling",
+            USD: "United States Dollar", UYU: "Uruguayan Peso", UZS: "Uzbekistan Som", VEF: "Venezuelan Bolivar Fuerte", VND: "Vietnamese Dong", VUV: "Vanuatu Vatu", YER: "Yemeni Rial", ZAR: "South African Rand", ZMK: "Zambian Kwacha", ZWD: "Zimbabwean Dollar"
+        };
+
+        const fromCurrencySelect = document.getElementById('fromCurrency');
+        const toCurrencySelect = document.getElementById('toCurrency');
+
+        // Populate options for fromCurrency and toCurrency selects
+        for (let currencyCode in countryList) {
+            const option1 = document.createElement('option');
+            option1.value = currencyCode;
+            option1.textContent = `${currencyCode} (${countryList[currencyCode]})`;
+            fromCurrencySelect.appendChild(option1);
+
+            const option2 = document.createElement('option');
+            option2.value = currencyCode;
+            option2.textContent = `${currencyCode} (${countryList[currencyCode]})`;
+            toCurrencySelect.appendChild(option2);
+        }
+
+        async function convertCurrency() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+            
+            const apiKey = '35878e7ef99280151963781f'; // Replace with your actual API key
+            
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('error').innerText = 'Please enter a valid amount';
+                document.getElementById('result').innerText = '';
+                document.getElementById('exchangeRate').innerText = '';
+                return;
+            }
+
+            const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}/${amount}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.result === 'error') {
+                    throw new Error(data['error-type']);
+                }
+
+                const convertedAmount = data.conversion_result;
+                document.getElementById('result').innerText =
+                    `${amount.toFixed(2)} ${fromCurrency} = ${convertedAmount.toFixed(2)} ${toCurrency}`;
+
+                // Calculate and display the exchange rate for 1 unit of fromCurrency
+                const exchangeRate = convertedAmount / amount;
+                document.getElementById('exchangeRate').innerText =
+                    `1 ${fromCurrency} = ${exchangeRate.toFixed(4)} ${toCurrency}`;
+                
+                document.getElementById('error').innerText = '';
+            } catch (error) {
+                console.error('Error fetching exchange rates:', error);
+                document.getElementById('error').innerText =
+                    'Error fetching exchange rates. Please try again later.';
+                document.getElementById('result').innerText = '';
+                document.getElementById('exchangeRate').innerText = '';
+            }
+        }
+
+        function loadDoc() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("homeContent").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "123.txt");
+            xhttp.send();
+        }
+
+        function load() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("homeContent").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "contact.html");
+            xhttp.send();
+        }
+
+        function l() {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("homeContent").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "help.txt");
+            xhttp.send();
+        }
+    </script>
+</body>
+</html>
